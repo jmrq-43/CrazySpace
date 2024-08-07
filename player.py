@@ -8,6 +8,8 @@ class Player(Entity):
         self.health = 100
         self.shield = 100
         self.powers = []
+        self.rect = self.image.get_rect(topleft=(x, y))
+        self.direction = 'right'
         self.projectiles = pygame.sprite.Group()
 
     def update(self, keys):

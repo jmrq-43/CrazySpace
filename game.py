@@ -1,7 +1,9 @@
 import pygame
-from settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS
-from player import Player
+
 from enemies import Boss, Enemy, NPC
+from player import Player
+from settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS
+
 
 class Game:
     def __init__(self):
@@ -23,10 +25,10 @@ class Game:
         self.boss = Boss(pygame.image.load('recursos/images/boss.png'), 400, 300, 100, 10, "Freeze Ability")
         self.all_sprites.add(self.boss)
         # Placeholder for enemy
-        self.enemy = Enemy(pygame.image.load('recursos/images/enemy.png'), 200, 200, 3, 5)
+        self.enemy = Enemy(pygame.image.load('recursos/images/enemy.png'), 200, 200, 100, 3, 5)
         self.all_sprites.add(self.enemy)
         # Placeholder for NPC
-        self.npc = NPC(pygame.image.load('recursos/images/npc.png'), 300, 300, "Hello, Player!")
+        self.npc = NPC(pygame.image.load('recursos/images/npc.png'), 300, 300, 100, "Hello, Player!")
         self.all_sprites.add(self.npc)
 
     def run(self):
@@ -69,6 +71,7 @@ class Game:
         self.enemy_projectiles.update()
         self.player.projectiles.update()
 
+        # Colisiones de proyectiles con enemigos
         for projectile in self.player.projectiles:
             hits = pygame.sprite.spritecollide(projectile, self.all_sprites, False)
             for hit in hits:
@@ -78,19 +81,49 @@ class Game:
                     if hit.health <= 0:
                         self.all_sprites.remove(hit)
 
+        # Colisiones de proyectiles con el jugador
         for projectile in self.enemy_projectiles:
             if pygame.sprite.collide_rect(projectile, self.player):
                 self.player.health -= 10
                 projectile.kill()
 
+        # Colisiones
         collisions = pygame.sprite.spritecollide(self.player, self.all_sprites, False)
         for sprite in collisions:
             if isinstance(sprite, Boss):
                 self.player.acquire_power(sprite)
-                self.boss.attack(self.player)  # Ejemplo de ataque del jefe al jugador
-                self.boss.use_special_ability()  # Usar la habilidad especial del jefe
+                self.boss.attack(self.player)
+                self.boss.use_special_ability()
                 self.all_sprites.remove(sprite)
-                # Implementar lógica adicional tras derrotar al jefe
+
+        # def update(self):
+        #     keys = pygame.key.get_pressed()
+        #     self.all_sprites.update(keys)
+        #     self.projectiles.update()
+        #     self.enemy_projectiles.update()
+        #     self.player.projectiles.update()
+        #
+        #     for projectile in self.player.projectiles:
+        #         hits = pygame.sprite.spritecollide(projectile, self.all_sprites, False)
+        #         for hit in hits:
+        #             if isinstance(hit, Enemy) or isinstance(hit, Boss):
+        #                 hit.health -= 10
+        #                 projectile.kill()
+        #                 if hit.health <= 0:
+        #                     self.all_sprites.remove(hit)
+        #
+        #     for projectile in self.enemy_projectiles:
+        #         if pygame.sprite.collide_rect(projectile, self.player):
+        #             self.player.health -= 10
+        #             projectile.kill()
+        #
+        #     collisions = pygame.sprite.spritecollide(self.player, self.all_sprites, False)
+        #     for sprite in collisions:
+        #         if isinstance(sprite, Boss):
+        #             self.player.acquire_power(sprite)
+        #             self.boss.attack(self.player)
+        #             self.boss.use_special_ability()
+        #             self.all_sprites.remove(sprite)
 
     def draw(self):
         self.screen.fill((0, 0, 0))
@@ -163,7 +196,7 @@ class Game:
             if isinstance(sprite, NPC):
                 sprite.interact()
 
+
 if __name__ == "__main__":
     game = Game()
     game.run()
-

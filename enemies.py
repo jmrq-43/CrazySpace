@@ -7,12 +7,15 @@ from settings import SCREEN_WIDTH, SCREEN_HEIGHT
 
 
 class Enemy(Entity):
-    def __init__(self, image, x, y, speed, attack_power):
+    def __init__(self, image, x, y, health, speed, attack_power):
         super().__init__(image, x, y)
+        self.health = health
         self.speed = speed
         self.attack_power = attack_power
         self.projectiles = pygame.sprite.Group()
         self.shoot_timer = random.randint(20, 60)
+        self.cooldown = 0
+
 
     def update(self, *args):
         self.rect.x += random.randint(-1, 1) * self.speed
@@ -24,9 +27,17 @@ class Enemy(Entity):
             self.shoot_timer = random.randint(20, 60)
         self.projectiles.update()
 
+
+    def attack(self, target):
+        if self.cooldown == 0:
+            target.health -= self.attack_power
+            self.cooldown = 60
+
+
     def shoot(self):
-        projectile = EnemyProjectile(self.rect.centerx, self.rect.bottom, 5)
+        projectile = EnemyProjectile(self.rect.centerx, self.rect.bottom, 1)
         self.projectiles.add(projectile)
+
 
 class Boss(Entity):
     def __init__(self, image, x, y, health, attack_power, special_ability):
@@ -36,6 +47,11 @@ class Boss(Entity):
         self.special_ability = special_ability
         self.cooldown = 0
         self.projectiles = pygame.sprite.Group()
+
+    def shoot(self):
+        projectile = EnemyProjectile(self.rect.centerx, self.rect.bottom, 10)
+        self.projectiles.add(projectile)
+
 
     def update(self, *args):
         self.rect.x += 1
@@ -58,14 +74,30 @@ class Boss(Entity):
         elif self.special_ability == "Instakill Ray":
             pass
 
+
 class NPC(Entity):
-    def __init__(self, image, x, y, dialogue):
+    def __init__(self, image, x, y,health, dialogue):
         super().__init__(image, x, y)
+        self.attack_power = 5
+        self.projectiles = pygame.sprite.Group()
+        self.health = health
         self.dialogue = dialogue
+        self.cooldown = 0
+
+
+    def attack(self, target):
+        if self.cooldown == 0:
+            target.health -= self.attack_power
+            self.cooldown = 60
+
 
     def update(self, *args):
-        pass
+        self.rect.x += 1
+        self.rect.y += random.randint(-1, 1) * 2
+        self.rect.clamp_ip(pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
+        if self.cooldown > 0:
+            self.cooldown -= 1
+        self.projectiles.update()
 
     def interact(self):
         print(self.dialogue)
-
