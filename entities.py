@@ -28,7 +28,6 @@ class Player(Entity):
             self.rect.y += self.speed
 
 import pygame
-from entities import Entity
 
 class Boss(Entity):
     def __init__(self, image, x, y, health, attack_power, special_ability):

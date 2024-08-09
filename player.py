@@ -24,7 +24,10 @@ class Player(Entity):
         self.projectiles.update()
 
     def shoot(self):
-        projectile = Projectile(self.rect.centerx, self.rect.top, 10)
+        if self.direction == 'right':
+            projectile = Projectile(self.rect.right, self.rect.centery, 10, 'right')
+        elif self.direction == 'left':
+            projectile = Projectile(self.rect.left, self.rect.centery, 10, 'left')
         self.projectiles.add(projectile)
 
     def acquire_power(self, boss):

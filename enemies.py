@@ -7,35 +7,46 @@ from settings import SCREEN_WIDTH, SCREEN_HEIGHT
 
 
 class Enemy(Entity):
-    def __init__(self, image, x, y, health, speed, attack_power):
+    def __init__(self, image, x, y, speed, fire_rate):
         super().__init__(image, x, y)
-        self.health = health
-        self.speed = speed
-        self.attack_power = attack_power
+        self.health = 100
         self.projectiles = pygame.sprite.Group()
-        self.shoot_timer = random.randint(20, 60)
-        self.cooldown = 0
+        self.image = image
+        self.rect = self.image.get_rect(topleft=(x, y))
+        self.speed = speed
+        self.fire_rate = fire_rate  # Tasa de disparo en cuadros por segundo
+        self.last_shot = pygame.time.get_ticks()
+        self.direction = random.choice(['left', 'right'])
 
+    def update(self, key):
+        # Movimiento aleatorio
+        if self.direction == 'left':
+            self.rect.x -= self.speed
+        elif self.direction == 'right':
+            self.rect.x += self.speed
 
-    def update(self, *args):
-        self.rect.x += random.randint(-1, 1) * self.speed
-        self.rect.y += random.randint(-1, 1) * self.speed
-        self.rect.clamp_ip(pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.shoot_timer -= 1
-        if self.shoot_timer <= 0:
+        # Cambio de dirección si sale de la pantalla
+        if self.rect.left < 0:
+            self.direction = 'right'
+        elif self.rect.right > SCREEN_WIDTH:
+            self.direction = 'left'
+
+        # Disparo
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_shot > self.fire_rate:
             self.shoot()
-            self.shoot_timer = random.randint(20, 60)
-        self.projectiles.update()
-
+            self.last_shot = current_time
 
     def attack(self, target):
         if self.cooldown == 0:
             target.health -= self.attack_power
             self.cooldown = 60
 
-
     def shoot(self):
-        projectile = EnemyProjectile(self.rect.centerx, self.rect.bottom, 1)
+        if self.direction == 'right':
+            projectile = EnemyProjectile(self.rect.right, self.rect.centery, 7)
+        elif self.direction == 'left':
+            projectile = EnemyProjectile(self.rect.left, self.rect.centery, 7)
         self.projectiles.add(projectile)
 
 
@@ -51,7 +62,6 @@ class Boss(Entity):
     def shoot(self):
         projectile = EnemyProjectile(self.rect.centerx, self.rect.bottom, 10)
         self.projectiles.add(projectile)
-
 
     def update(self, *args):
         self.rect.x += 1
@@ -76,20 +86,17 @@ class Boss(Entity):
 
 
 class NPC(Entity):
-    def __init__(self, image, x, y,health, dialogue):
+    def __init__(self, image, x, y):
         super().__init__(image, x, y)
         self.attack_power = 5
         self.projectiles = pygame.sprite.Group()
-        self.health = health
-        self.dialogue = dialogue
+        self.health = 10
         self.cooldown = 0
-
 
     def attack(self, target):
         if self.cooldown == 0:
             target.health -= self.attack_power
             self.cooldown = 60
-
 
     def update(self, *args):
         self.rect.x += 1
@@ -99,5 +106,3 @@ class NPC(Entity):
             self.cooldown -= 1
         self.projectiles.update()
 
-    def interact(self):
-        print(self.dialogue)
