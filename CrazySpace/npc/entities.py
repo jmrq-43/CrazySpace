@@ -9,7 +9,7 @@ class Entity(pygame.sprite.Sprite):
     def update(self, keys):
         pass
 
-from settings import PLAYER_SPEED
+from CrazySpace.main.settings import PLAYER_SPEED
 from entities import Entity
 
 class Player(Entity):

@@ -1,6 +1,6 @@
 import pygame
-from entities import Entity
-from proyectiles import Projectile
+from CrazySpace.npc.entities import Entity
+from CrazySpace.npc.proyectiles import Projectile
 
 class Player(Entity):
     def __init__(self, image, x, y):

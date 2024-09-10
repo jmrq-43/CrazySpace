@@ -70,6 +70,6 @@ El proyecto se organiza en varios archivos y carpetas:
 
 ## Problemas Conocidos
 
-- Asegúrate de tener las imágenes en la carpeta correcta (`recursos/images/`) para evitar errores.
+- Asegúrate de tener las imágenes en la carpeta correcta (`CrazySpace/npc/recursos/images/`) para evitar errores.
 - La lógica de algunas habilidades especiales de los jefes aún no está completamente implementada.
 

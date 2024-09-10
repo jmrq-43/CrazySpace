@@ -1,9 +1,9 @@
 import pygame
 from entities import Entity
-from proyectiles import Projectile, EnemyProjectile
+from proyectiles import EnemyProjectile
 import random
 
-from settings import SCREEN_WIDTH, SCREEN_HEIGHT
+from CrazySpace.main.settings import SCREEN_WIDTH, SCREEN_HEIGHT
 
 
 class Enemy(Entity):

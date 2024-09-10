@@ -2,8 +2,8 @@ import random
 
 import pygame
 
-from enemies import Boss, Enemy, NPC
-from player import Player
+from CrazySpace.npc.enemies import Boss, Enemy, NPC
+from CrazySpace.player.player import Player
 from settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS
 
 
@@ -21,17 +21,17 @@ class Game:
         self.all_sprites = pygame.sprite.Group()
         self.enemies = pygame.sprite.Group()
         self.npcs = pygame.sprite.Group()
-        self.player = Player(pygame.image.load('recursos/images/player.png'), 100, 100)
+        self.player = Player(pygame.image.load('../npc/recursos/images/player.png'), 100, 100)
         self.all_sprites.add(self.player)
         self.projectiles = pygame.sprite.Group()
         self.enemy_projectiles = pygame.sprite.Group()
-        self.boss = Boss(pygame.image.load('recursos/images/boss.png'), 400, 300, 100, 10, "Freeze Ability")
+        self.boss = Boss(pygame.image.load('../npc/recursos/images/boss.png'), 400, 300, 100, 10, "Freeze Ability")
         self.enemy_count = 0
         self.spawn_npcs()
 
     def spawn_npcs(self):
         for _ in range(random.randint(10, 20)):
-            npc = NPC(pygame.image.load('recursos/images/npc.png'), random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT))
+            npc = NPC(pygame.image.load('../npc/recursos/images/npc.png'), random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT))
             self.npcs.add(npc)
             self.all_sprites.add(npc)
         self.enemy_count = len(self.npcs)
@@ -42,7 +42,7 @@ class Game:
 
     def spawn_enemies(self):
         for _ in range(3):
-            enemy = Enemy(pygame.image.load('recursos/images/enemy.png'), random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT), 3, 1000)
+            enemy = Enemy(pygame.image.load('../npc/recursos/images/enemy.png'), random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT), 3, 1000)
             self.enemies.add(enemy)
             self.all_sprites.add(enemy)
         self.enemy_count = len(self.enemies)
