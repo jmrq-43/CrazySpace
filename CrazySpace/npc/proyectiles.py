@@ -1,5 +1,5 @@
 import pygame
-from settings import SCREEN_WIDTH, SCREEN_HEIGHT
+from CrazySpace.main.settings import SCREEN_WIDTH, SCREEN_HEIGHT
 
 
 class Projectile(pygame.sprite.Sprite):
